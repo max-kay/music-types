@@ -6,6 +6,9 @@ Currently this crate only contains types representing pitches, intervals and sca
 
 But types representing chords and rhythmic information are planed.
 
+For detailed information about the representation read
+[representation.md](https://github.com/max-kay/music-types/blob/main/representation.md).
+
 
 ## Features
 
