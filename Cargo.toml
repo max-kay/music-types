@@ -9,3 +9,8 @@ readme = "README.md"
 keywords = ["music", "musictheory", "pitch", "scale"]
 
 [dependencies]
+serde = { version = "1.0", features = ["derive"], optional = true }
+smufl = { version = "0.2", optional = true }
+
+[features]
+default = ["smufl"]

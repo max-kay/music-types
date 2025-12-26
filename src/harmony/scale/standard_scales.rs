@@ -1,104 +1,170 @@
 #![allow(missing_docs)]
 use super::*;
 
-/// Diatonic modes
+/// Common scales
 impl Scale {
     pub fn major() -> Self {
         Self(vec![
-            IntervalClass(Interval {
+            Interval {
                 chromatic: 0,
                 diatonic: 0,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 2,
                 diatonic: 1,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 4,
                 diatonic: 2,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 5,
                 diatonic: 3,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 7,
                 diatonic: 4,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 9,
                 diatonic: 5,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 11,
                 diatonic: 6,
-            }),
+            },
         ])
     }
 
     pub fn minor() -> Self {
         Self(vec![
-            IntervalClass(Interval {
+            Interval {
                 chromatic: 0,
                 diatonic: 0,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 2,
                 diatonic: 1,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 3,
                 diatonic: 2,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 5,
                 diatonic: 3,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 7,
                 diatonic: 4,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 8,
                 diatonic: 5,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 10,
                 diatonic: 6,
-            }),
+            },
+        ])
+    }
+
+    pub fn harmonic_minor() -> Self {
+        Self(vec![
+            Interval {
+                chromatic: 0,
+                diatonic: 0,
+            },
+            Interval {
+                chromatic: 2,
+                diatonic: 1,
+            },
+            Interval {
+                chromatic: 3,
+                diatonic: 2,
+            },
+            Interval {
+                chromatic: 5,
+                diatonic: 3,
+            },
+            Interval {
+                chromatic: 7,
+                diatonic: 4,
+            },
+            Interval {
+                chromatic: 8,
+                diatonic: 5,
+            },
+            Interval {
+                chromatic: 11,
+                diatonic: 6,
+            },
+        ])
+    }
+
+    pub fn melodic_minor() -> Self {
+        Self(vec![
+            Interval {
+                chromatic: 0,
+                diatonic: 0,
+            },
+            Interval {
+                chromatic: 2,
+                diatonic: 1,
+            },
+            Interval {
+                chromatic: 3,
+                diatonic: 2,
+            },
+            Interval {
+                chromatic: 5,
+                diatonic: 3,
+            },
+            Interval {
+                chromatic: 7,
+                diatonic: 4,
+            },
+            Interval {
+                chromatic: 9,
+                diatonic: 5,
+            },
+            Interval {
+                chromatic: 11,
+                diatonic: 6,
+            },
         ])
     }
 
     pub fn lydian() -> Self {
         Self(vec![
-            IntervalClass(Interval {
+            Interval {
                 chromatic: 0,
                 diatonic: 0,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 2,
                 diatonic: 1,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 4,
                 diatonic: 2,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 6,
                 diatonic: 3,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 7,
                 diatonic: 4,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 9,
                 diatonic: 5,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 11,
                 diatonic: 6,
-            }),
+            },
         ])
     }
 
@@ -108,67 +174,67 @@ impl Scale {
 
     pub fn mixolydian() -> Self {
         Self(vec![
-            IntervalClass(Interval {
+            Interval {
                 chromatic: 0,
                 diatonic: 0,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 2,
                 diatonic: 1,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 4,
                 diatonic: 2,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 5,
                 diatonic: 3,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 7,
                 diatonic: 4,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 9,
                 diatonic: 5,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 10,
                 diatonic: 6,
-            }),
+            },
         ])
     }
 
     pub fn dorian() -> Self {
         Self(vec![
-            IntervalClass(Interval {
+            Interval {
                 chromatic: 0,
                 diatonic: 0,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 2,
                 diatonic: 1,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 3,
                 diatonic: 2,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 5,
                 diatonic: 3,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 7,
                 diatonic: 4,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 9,
                 diatonic: 5,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 10,
                 diatonic: 6,
-            }),
+            },
         ])
     }
 
@@ -178,71 +244,67 @@ impl Scale {
 
     pub fn phrygian() -> Self {
         Self(vec![
-            IntervalClass(Interval {
+            Interval {
                 chromatic: 0,
                 diatonic: 0,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 1,
                 diatonic: 1,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 3,
                 diatonic: 2,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 5,
                 diatonic: 3,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 7,
                 diatonic: 4,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 8,
                 diatonic: 5,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 10,
                 diatonic: 6,
-            }),
+            },
         ])
-    }
-
-    pub fn test_thing() -> Self {
-        std::str::FromStr::from_str("1 2 3 4 5 6 7").unwrap()
     }
 
     pub fn locrian() -> Self {
         Self(vec![
-            IntervalClass(Interval {
+            Interval {
                 chromatic: 0,
                 diatonic: 0,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 1,
                 diatonic: 1,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 3,
                 diatonic: 2,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 5,
                 diatonic: 3,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 6,
                 diatonic: 4,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 8,
                 diatonic: 5,
-            }),
-            IntervalClass(Interval {
+            },
+            Interval {
                 chromatic: 10,
                 diatonic: 6,
-            }),
+            },
         ])
     }
 }
