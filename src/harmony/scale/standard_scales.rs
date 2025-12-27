@@ -309,6 +309,60 @@ impl Scale {
     }
 }
 
+/// constants for the most common Keysignatures
+#[allow(missing_docs)]
+impl KeyAccidental {
+    pub const C_FLAT: Self = Self {
+        staffposition: 0,
+        accidental: Accidental::new(-1),
+    };
+    pub const G_FLAT: Self = Self {
+        staffposition: 4,
+        accidental: Accidental::new(-1),
+    };
+    pub const D_FLAT: Self = Self {
+        staffposition: 1,
+        accidental: Accidental::new(-1),
+    };
+    pub const A_FLAT: Self = Self {
+        staffposition: 5,
+        accidental: Accidental::new(-1),
+    };
+    pub const E_FLAT: Self = Self {
+        staffposition: 2,
+        accidental: Accidental::new(-1),
+    };
+    pub const B_FLAT: Self = Self {
+        staffposition: 6,
+        accidental: Accidental::new(-1),
+    };
+
+    pub const F_SHARP: Self = Self {
+        staffposition: 3,
+        accidental: Accidental::new(1),
+    };
+    pub const C_SHARP: Self = Self {
+        staffposition: 0,
+        accidental: Accidental::new(1),
+    };
+    pub const G_SHARP: Self = Self {
+        staffposition: 4,
+        accidental: Accidental::new(1),
+    };
+    pub const D_SHARP: Self = Self {
+        staffposition: 1,
+        accidental: Accidental::new(1),
+    };
+    pub const A_SHARP: Self = Self {
+        staffposition: 5,
+        accidental: Accidental::new(1),
+    };
+    pub const E_SHARP: Self = Self {
+        staffposition: 2,
+        accidental: Accidental::new(1),
+    };
+}
+
 #[cfg(test)]
 mod test {
     use super::*;

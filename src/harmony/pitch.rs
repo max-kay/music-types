@@ -22,6 +22,16 @@ use crate::div_remainder;
 /// a number followed by `"#"` or `"b"` in parenthases, e.g. `"(3#)"` = `"###"` and `"(3b)"` = `"bbb"`.
 pub struct Accidental(i16);
 
+/// constants for the most common accidentals
+#[allow(missing_docs)]
+impl Accidental {
+    pub const DOUBLE_FLAT: Self = Self(-2);
+    pub const FLAT: Self = Self(-1);
+    pub const NATURAL: Self = Self(0);
+    pub const SHARP: Self = Self(1);
+    pub const DOUBLE_SHARP: Self = Self(2);
+}
+
 impl Accidental {
     /// Constructs a accidental from the chromatic shift
     /// # Examples
@@ -356,6 +366,18 @@ impl Pitch {
         self.diatonic
     }
 
+    /// changes the accidental of the pitch
+    pub fn change_accidental(&mut self, accidental: Accidental) {
+        self.chromatic += accidental.0 - self.accidental().0;
+    }
+
+    /// creates a pitch with the same staff position but with the new accidental
+    pub fn with_accidental(&self, accidental: Accidental) -> Self {
+        let mut this = *self;
+        this.change_accidental(accidental);
+        this
+    }
+
     /// Converts the pitch to a frequency using the standard tuning A4 = 440Hz
     pub fn to_frequency(&self) -> f32 {
         self.to_chromatic().to_frequency()
@@ -483,6 +505,40 @@ mod test {
         assert_eq!(
             Pitch::from_str("Cb4").unwrap(),
             pitch.to_pitch_named(PitchName(b'C'))
+        );
+    }
+
+    #[test]
+    fn change_accidental() {
+        assert_eq!(
+            Pitch::from_str("C#6")
+                .unwrap()
+                .with_accidental(Accidental::DOUBLE_FLAT),
+            Pitch::from_str("C&6").unwrap()
+        );
+        assert_eq!(
+            Pitch::from_str("C#6")
+                .unwrap()
+                .with_accidental(Accidental::FLAT),
+            Pitch::from_str("Cb6").unwrap()
+        );
+        assert_eq!(
+            Pitch::from_str("C#6")
+                .unwrap()
+                .with_accidental(Accidental::NATURAL),
+            Pitch::from_str("C6").unwrap()
+        );
+        assert_eq!(
+            Pitch::from_str("C#6")
+                .unwrap()
+                .with_accidental(Accidental::SHARP),
+            Pitch::from_str("C#6").unwrap()
+        );
+        assert_eq!(
+            Pitch::from_str("C#6")
+                .unwrap()
+                .with_accidental(Accidental::DOUBLE_SHARP),
+            Pitch::from_str("C+6").unwrap()
         );
     }
 }
