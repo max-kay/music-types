@@ -224,7 +224,7 @@ impl KeySignature {
 /// # use music_types::harmony::{scale::{KeySignature, AccidentalCalulator}, Pitch, ParsePitchError, Accidental};
 /// # use std::str::FromStr;
 /// // create calculator with key signature Bb
-/// let key = KeySignature::major(Pitch::from_str("Bb4")?);
+/// let key = KeySignature::major(Pitch::class_from_str("Bb")?);
 /// let mut calculator: AccidentalCalulator = key.into();
 ///
 /// // no accidental needed because Eb is in the key of Bb

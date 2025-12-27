@@ -222,8 +222,27 @@ impl PitchName {
 /// To denote the octave scientific pitch notation is used, which defines middle c – the c on the
 /// line between bass and treble clef – to be C4 and the start of the 4th octave.
 ///
+/// The name of the pitch must be an uppercase letter.
+///
+/// For parsing accidentals see [`Accidental`]
+///
+/// # Pitch Classes
+/// To resent a pitch class i.e. a pitch where we don't care about which octave is placed in we put
+/// the pitch into octave 4.
+///
+/// To create such an object either use the [`Pitch::class_from_str`] or take the remainder of a
+/// pitch with [`Octave`][`crate::harmony::Octave`]
+///
+/// ```
+/// # use music_types::harmony::{Pitch, ParsePitchError, Octave};
+/// # use std::str::FromStr;
+/// assert_eq!(Pitch::class_from_str("F")?, Pitch::from_str("F4")?);
+/// assert_eq!(Pitch::from_str("F6")? % Octave, Pitch::from_str("F4")?);
+/// # Ok::<(), ParsePitchError>(())
+/// ```
+///
 /// # Implementation of PartialOrd
-/// Pitch implements the [`Partial`][`std::cmp::PartialOrd`] trait.
+/// Pitch implements the [`PartialOrd`][`std::cmp::PartialOrd`] trait.
 /// All of the usual scales are fully comparable.
 /// However, some edge case are not:
 /// ```

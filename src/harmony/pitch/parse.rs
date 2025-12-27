@@ -83,6 +83,25 @@ impl FromStr for PitchName {
     }
 }
 
+impl Pitch {
+    /// parses a pitch from a pitch class
+    pub fn class_from_str(s: &str) -> Result<Self, ParsePitchError> {
+        let (name, accidental) = Self::parse_class(s)?;
+        Ok(Self::from_pitch_class(name, accidental))
+    }
+
+    fn parse_class(s: &str) -> Result<(PitchName, Accidental), ParsePitchError> {
+        let mut chars = s.chars();
+        let pitch_name = PitchName::new(
+            chars
+                .next()
+                .ok_or(ParsePitchError::InvalidPitchName(s.to_string()))?,
+        )
+        .ok_or(ParsePitchError::InvalidPitchName(s.to_string()))?;
+        Ok((pitch_name, Accidental::from_str(chars.as_str())?))
+    }
+}
+
 impl FromStr for Pitch {
     type Err = ParsePitchError;
 
@@ -104,18 +123,8 @@ impl FromStr for Pitch {
         let octave_str = &s[octave_index..];
         let octave: i16 = FromStr::from_str(octave_str)
             .map_err(|_| ParsePitchError::InvalidOctave(octave_str.to_string()))?;
-        let mut chars = s[0..octave_index].chars();
-        let pitch_name = PitchName::new(chars.next().ok_or(ParsePitchError::InvalidPitchName(
-            s[0..octave_index].to_string(),
-        ))?)
-        .ok_or(ParsePitchError::InvalidPitchName(
-            s[0..octave_index].to_string(),
-        ))?;
-        Ok(Self::compose(
-            pitch_name,
-            Accidental::from_str(chars.as_str())?,
-            octave,
-        ))
+        let (pitch_name, accidental) = Self::parse_class(&s[0..octave_index])?;
+        Ok(Self::compose(pitch_name, accidental, octave))
     }
 }
 
