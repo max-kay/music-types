@@ -81,7 +81,7 @@ impl FromStr for Interval {
                     Self::to_chromatic_steps_perfect(diatonic_steps)
                 } else {
                     return Err(ParseIntervalError::Impossible {
-                        number: diatonic_steps,
+                        number: interval_number,
                         quality: None,
                     });
                 }

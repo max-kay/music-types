@@ -212,29 +212,36 @@ impl PitchName {
 /// To denote the octave scientific pitch notation is used, which defines middle c – the c on the
 /// line between bass and treble clef – to be C4 and the start of the 4th octave.
 ///
-/// # Implementation of Ord
-/// Pitch implements the [`Ord`][`std::cmp::Ord`] trait.
-/// Here the diatonic information is compared before the chromatic information.
-/// For any of the usual scales this is irrelevant, since both ways of comparing two pitches will
-/// result in the same ordering
-/// However, in some edge cases this is relevant:
+/// # Implementation of PartialOrd
+/// Pitch implements the [`Partial`][`std::cmp::PartialOrd`] trait.
+/// All of the usual scales are fully comparable.
+/// However, some edge case are not:
 /// ```
 /// # use music_types::harmony::{Pitch, ParsePitchError};
 /// # use std::str::FromStr;
-/// // as expected
-/// assert!(Pitch::from_str("E4")? < Pitch::from_str("F4")?);
+/// # use std::cmp::Ordering;
+/// assert_eq!(Pitch::from_str("E4")?.partial_cmp(&Pitch::from_str("F4")?), Some(Ordering::Less));
+/// assert_eq!(Pitch::from_str("B4")?.partial_cmp(&Pitch::from_str("Bb4")?), Some(Ordering::Greater));
+/// assert_eq!(Pitch::from_str("F4")?.partial_cmp(&Pitch::from_str("E#4")?), Some(Ordering::Greater));
 ///
-/// // true because E is one staff space below F
-/// assert!(Pitch::from_str("E#4")? < Pitch::from_str("Fb4")?);
-///
-/// // order flipped because the chromatic pitch of E# is higher than that of Fb
-/// assert!(Pitch::from_str("Fb4")?.to_chromatic() < Pitch::from_str("E#4")?.to_chromatic());
+/// // cannot be compared because the comparison is abiguous
+/// assert_eq!(Pitch::from_str("E#4")?.partial_cmp(&Pitch::from_str("Fb4")?), None);
 /// # Ok::<(), ParsePitchError>(())
 /// ```
+/// where ever complete ordering is necessary use ether [`Pitch::cmp_diatonic`] or
+/// [`Pitch::cmp_chromatic`], which compares the given representation first.
+/// ```
+/// # use music_types::harmony::{Pitch, ParsePitchError};
+/// # use std::str::FromStr;
+/// # use std::cmp::Ordering;
+/// // Less because E is one staff space below F
+/// assert_eq!(Pitch::from_str("E#4")?.cmp_diatonic(&Pitch::from_str("Fb4")?), Ordering::Less);
 ///
-/// One side effect of this implementation of `Ord` is that a sorted list of `Pitch` might not be
-/// sorted after converting to ChromaticPitch. If this is undesired use the method `cmp_chromatic`,
-/// which compares the chromatic information first.
+/// // Greater because E#4 has higher chromatic pitch that Fb4
+/// assert_eq!(Pitch::from_str("E#4")?.cmp_chromatic(&Pitch::from_str("Fb4")?), Ordering::Greater);
+/// # Ok::<(), ParsePitchError>(())
+/// ```
+/// Note that both functions preserve the ordering from the PartialOrd implementation
 pub struct Pitch {
     pub(crate) diatonic: i16,
     pub(crate) chromatic: i16,
@@ -242,17 +249,18 @@ pub struct Pitch {
 
 impl PartialOrd for Pitch {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl Ord for Pitch {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        match self.diatonic.cmp(&other.diatonic) {
-            core::cmp::Ordering::Equal => {}
-            ord => return ord,
+        use std::cmp::Ordering::*;
+        match (
+            self.diatonic.cmp(&other.diatonic),
+            self.chromatic.cmp(&other.chromatic),
+        ) {
+            (Equal, Equal) => Some(Equal),
+            (Less, Less) => Some(Less),
+            (Greater, Greater) => Some(Greater),
+            (Equal, ord) => Some(ord),
+            (ord, Equal) => Some(ord),
+            (Less, Greater) | (Greater, Less) => None,
         }
-        self.chromatic.cmp(&other.chromatic)
     }
 }
 
@@ -261,6 +269,14 @@ impl Pitch {
     pub fn cmp_chromatic(&self, other: &Self) -> std::cmp::Ordering {
         match self.chromatic.cmp(&other.chromatic) {
             core::cmp::Ordering::Equal => self.diatonic.cmp(&other.diatonic),
+            ord => ord,
+        }
+    }
+
+    /// Compares the pitches by diatonic information first. See struct level docs
+    pub fn cmp_diatonic(&self, other: &Self) -> std::cmp::Ordering {
+        match self.diatonic.cmp(&other.diatonic) {
+            core::cmp::Ordering::Equal => self.chromatic.cmp(&other.chromatic),
             ord => ord,
         }
     }

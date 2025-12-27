@@ -159,7 +159,6 @@ macro_rules! complete_action {
 ///
 /// Additionaly, constants for the most common intervals exist.
 ///
-/// # Examples
 /// ```
 /// # use music_types::harmony::{Interval, ParseIntervalError};
 /// # use std::str::FromStr;
@@ -174,6 +173,8 @@ macro_rules! complete_action {
 /// # Ok::<(), ParseIntervalError>(())
 /// ```
 ///
+/// ## Extended interval quality
+///
 /// To allow the representation of any interval quality parenthases are used.
 /// The interval quality is parse from:
 /// - `(-2)` dimished
@@ -185,7 +186,6 @@ macro_rules! complete_action {
 /// Note that for intervals which have perfect quality `(-1)` and `(1)` cannot be used.
 /// Simmilarly for intervals which have minor and major quality where `(0)` cannot be used.
 ///
-/// # Examples
 /// ```
 /// # use music_types::harmony::{Interval, ParseIntervalError};
 /// # use std::str::FromStr;
@@ -196,16 +196,27 @@ macro_rules! complete_action {
 /// # Ok::<(), ParseIntervalError>(())
 /// ```
 ///
+/// ## Impossible Intervals
 /// When trying to parse an invalid combination of interval number ParseIntervalError::Impossible
 /// is returned.
 ///
-/// # Examples
 /// ```
 /// # use music_types::harmony::{Interval, ParseIntervalError};
 /// # use std::str::FromStr;
 /// assert!(matches!(
 ///     Interval::from_str("m8"),
-///     Err(ParseIntervalError::Impossible{number: 8, quality: _ }),
+///     Err(ParseIntervalError::Impossible {
+///         number: 8,
+///         quality: _
+///     }),
+/// ));
+/// dbg!(Interval::from_str("3"));
+/// assert!(matches!(
+///     Interval::from_str("3"),
+///     Err(ParseIntervalError::Impossible {
+///         number: 3,
+///         quality: _
+///     }),
 /// ));
 /// ```
 pub struct Interval {
@@ -215,17 +226,36 @@ pub struct Interval {
 
 impl PartialOrd for Interval {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        match self.chromatic.partial_cmp(&other.chromatic) {
-            Some(core::cmp::Ordering::Equal) => {}
-            ord => return ord,
+        use std::cmp::Ordering::*;
+        match (
+            self.diatonic.cmp(&other.diatonic),
+            self.chromatic.cmp(&other.chromatic),
+        ) {
+            (Equal, Equal) => Some(Equal),
+            (Less, Less) => Some(Less),
+            (Greater, Greater) => Some(Greater),
+            (Equal, ord) => Some(ord),
+            (ord, Equal) => Some(ord),
+            (Less, Greater) | (Greater, Less) => None,
         }
-        self.diatonic.partial_cmp(&other.diatonic)
     }
 }
 
-impl Ord for Interval {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.partial_cmp(other).unwrap()
+impl Interval {
+    /// Compares the pitches by chromatic information first. See struct level docs
+    pub fn cmp_chromatic(&self, other: &Self) -> std::cmp::Ordering {
+        match self.chromatic.cmp(&other.chromatic) {
+            core::cmp::Ordering::Equal => self.diatonic.cmp(&other.diatonic),
+            ord => ord,
+        }
+    }
+
+    /// Compares the pitches by diatonic information first. See struct level docs
+    pub fn cmp_diatonic(&self, other: &Self) -> std::cmp::Ordering {
+        match self.diatonic.cmp(&other.diatonic) {
+            core::cmp::Ordering::Equal => self.chromatic.cmp(&other.chromatic),
+            ord => ord,
+        }
     }
 }
 
@@ -345,6 +375,10 @@ impl Interval {
     };
 
     pub const MIN_SEVENTH: Self = Interval {
+        diatonic: 6,
+        chromatic: 10,
+    };
+    pub const DOM_SEVENTH: Self = Interval {
         diatonic: 6,
         chromatic: 10,
     };

@@ -1,7 +1,7 @@
 //! this module contains types representing scales
 use std::ops::Add;
 
-use crate::harmony::{ChromaticOctave, Interval, Octave, Pitch};
+use crate::harmony::{ChromaticOctave, Interval, Pitch};
 
 mod display;
 mod parse;
@@ -48,7 +48,7 @@ impl Scale {
     pub fn new(mut intervals: Vec<Interval>) -> Self {
         intervals.iter_mut().for_each(|i| *i %= ChromaticOctave);
         if !intervals.is_sorted() {
-            intervals.sort();
+            intervals.sort_by(Interval::cmp_chromatic);
         }
         if intervals[0] != Interval::new(0, 0) {
             intervals.insert(0, Interval::new(0, 0));
@@ -101,8 +101,12 @@ impl Scale {
             return self.clone();
         }
         let interval = self.0[n];
-        let mut new_intervals: Vec<_> = self.0.iter().map(|i| (i - interval) % Octave).collect();
-        new_intervals.sort();
+        let mut new_intervals: Vec<_> = self
+            .0
+            .iter()
+            .map(|i| (i - interval) % ChromaticOctave)
+            .collect();
+        new_intervals.sort_by(Interval::cmp_chromatic);
         Self(new_intervals)
     }
 
